@@ -20,6 +20,10 @@ export class User {
   })
   role: string;
 
+  // Links a TEACHER-role account to its Teacher record so it can see its own timetable
+  @Prop({ type: Types.ObjectId, ref: 'Teacher' })
+  teacherId?: Types.ObjectId;
+
   @Prop({ default: true })
   isActive: boolean;
 }

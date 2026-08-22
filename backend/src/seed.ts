@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
+import * as bcrypt from 'bcrypt';
 import {
   UserSchema,
   SchoolSchema,
@@ -9,6 +10,7 @@ import {
   TeacherSchema,
   RoomSchema,
   TimeSlotSchema,
+  CurriculumRuleSchema,
 } from './schemas';
 
 dotenv.config();
@@ -31,6 +33,7 @@ async function seed() {
     await connection.collection('rooms').deleteMany({}).catch(() => null);
     await connection.collection('timeslots').deleteMany({}).catch(() => null);
     await connection.collection('users').deleteMany({}).catch(() => null);
+    await connection.collection('curriculumrules').deleteMany({}).catch(() => null);
 
     // Seed School
     const schoolModel = connection.model('School', SchoolSchema);
@@ -79,22 +82,22 @@ async function seed() {
     // Seed Subjects
     const subjectModel = connection.model('Subject', SubjectSchema);
     const subjects = await subjectModel.insertMany([
-      { code: 'TOAN', name: 'Toán', shortName: 'T' },
-      { code: 'TV', name: 'Tiếng Việt', shortName: 'TV' },
-      { code: 'TA', name: 'Tiếng Anh', shortName: 'TA' },
-      { code: 'GDTC', name: 'Giáo dục thể chất', shortName: 'GDTC' },
-      { code: 'TNXH', name: 'Tự nhiên - Xã hội', shortName: 'TNXH' },
+      { schoolId: school._id, code: 'TOAN', name: 'Toán', shortName: 'T' },
+      { schoolId: school._id, code: 'TV', name: 'Tiếng Việt', shortName: 'TV' },
+      { schoolId: school._id, code: 'TA', name: 'Tiếng Anh', shortName: 'TA' },
+      { schoolId: school._id, code: 'GDTC', name: 'Giáo dục thể chất', shortName: 'GDTC' },
+      { schoolId: school._id, code: 'TNXH', name: 'Tự nhiên - Xã hội', shortName: 'TNXH' },
     ]);
     console.log(`✅ Created ${subjects.length} subjects`);
 
     // Seed Teachers
     const teacherModel = connection.model('Teacher', TeacherSchema);
     const teachers = await teacherModel.insertMany([
-      { code: 'GV001', name: 'Cô Thúy', email: 'thuy@school.com', department: 'Math' },
-      { code: 'GV002', name: 'Cô Minh', email: 'minh@school.com', department: 'Vietnamese' },
-      { code: 'GV003', name: 'Cô Hòa', email: 'hoa@school.com', department: 'English' },
-      { code: 'GV004', name: 'Thầy Tuấn', email: 'tuan@school.com', department: 'PE' },
-      { code: 'GV005', name: 'Cô Lan', email: 'lan@school.com', department: 'Science' },
+      { schoolId: school._id, code: 'GV001', name: 'Cô Thúy', email: 'thuy@school.com', department: 'Math' },
+      { schoolId: school._id, code: 'GV002', name: 'Cô Minh', email: 'minh@school.com', department: 'Vietnamese' },
+      { schoolId: school._id, code: 'GV003', name: 'Cô Hòa', email: 'hoa@school.com', department: 'English' },
+      { schoolId: school._id, code: 'GV004', name: 'Thầy Tuấn', email: 'tuan@school.com', department: 'PE' },
+      { schoolId: school._id, code: 'GV005', name: 'Cô Lan', email: 'lan@school.com', department: 'Science' },
     ]);
     console.log(`✅ Created ${teachers.length} teachers`);
 
@@ -126,16 +129,28 @@ async function seed() {
     ]);
     console.log(`✅ Created ${timeSlots.length} time slots`);
 
+    // Seed CurriculumRules (grade 1 sample requirements)
+    const curriculumRuleModel = connection.model('CurriculumRule', CurriculumRuleSchema);
+    const curriculumRules = await curriculumRuleModel.insertMany([
+      { academicYearId: academicYear._id, grade: 1, subjectId: subjects[0]._id, requiredPeriodsPerWeek: 5, isRequired: true, severity: 'ERROR' },
+      { academicYearId: academicYear._id, grade: 1, subjectId: subjects[1]._id, requiredPeriodsPerWeek: 10, isRequired: true, severity: 'ERROR' },
+      { academicYearId: academicYear._id, grade: 1, subjectId: subjects[2]._id, requiredPeriodsPerWeek: 2, isRequired: false, severity: 'WARNING' },
+      { academicYearId: academicYear._id, grade: 1, subjectId: subjects[3]._id, requiredPeriodsPerWeek: 2, isRequired: true, severity: 'WARNING' },
+      { academicYearId: academicYear._id, grade: 1, subjectId: subjects[4]._id, requiredPeriodsPerWeek: 2, isRequired: true, severity: 'INFO' },
+    ]);
+    console.log(`✅ Created ${curriculumRules.length} curriculum rules`);
+
     // Seed test user
     const userModel = connection.model('User', UserSchema);
+    const passwordHash = await bcrypt.hash('password123', 10);
     const user = await userModel.create({
       email: 'test@test.com',
-      passwordHash: 'hashed_password_placeholder', // Will be replaced with bcrypt in auth
+      passwordHash,
       name: 'Test User',
       role: 'ADMIN',
       isActive: true,
     });
-    console.log('✅ Created test user:', user.email);
+    console.log('✅ Created test user:', user.email, '(password: password123)');
 
     console.log('✨ Seed completed successfully!');
     await mongoose.disconnect();

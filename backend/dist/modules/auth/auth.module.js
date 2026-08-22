@@ -16,6 +16,7 @@ const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
 const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const user_schema_1 = require("../../schemas/user.schema");
+const teacher_schema_1 = require("../../schemas/teacher.schema");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -36,7 +37,10 @@ exports.AuthModule = AuthModule = __decorate([
                     };
                 },
             }),
-            mongoose_1.MongooseModule.forFeature([{ name: user_schema_1.User.name, schema: user_schema_1.UserSchema }]),
+            mongoose_1.MongooseModule.forFeature([
+                { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
+                { name: teacher_schema_1.Teacher.name, schema: teacher_schema_1.TeacherSchema },
+            ]),
         ],
         providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
         controllers: [auth_controller_1.AuthController],

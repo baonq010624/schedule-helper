@@ -28,8 +28,8 @@ let TeacherController = class TeacherController {
     async create(createTeacherDto) {
         return this.teacherService.create(createTeacherDto);
     }
-    async findAll() {
-        return this.teacherService.findAll();
+    async findAll(schoolId) {
+        return this.teacherService.findAll(schoolId);
     }
     async findById(id) {
         return this.teacherService.findById(id);
@@ -52,8 +52,9 @@ __decorate([
 ], TeacherController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('schoolId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], TeacherController.prototype, "findAll", null);
 __decorate([

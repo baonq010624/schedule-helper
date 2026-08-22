@@ -12,7 +12,7 @@ export declare class SubjectService {
     } & {
         id: string;
     }>;
-    findAll(): Promise<(import("mongoose").Document<unknown, {}, SubjectDocument, {}, import("mongoose").DefaultSchemaOptions> & Subject & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    findAll(schoolId?: string): Promise<(import("mongoose").Document<unknown, {}, SubjectDocument, {}, import("mongoose").DefaultSchemaOptions> & Subject & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;

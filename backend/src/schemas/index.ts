@@ -24,3 +24,6 @@ export type { TimeSlotDocument } from './time-slot.schema';
 
 export { TimetableEntry, TimetableEntrySchema } from './timetable-entry.schema';
 export type { TimetableEntryDocument } from './timetable-entry.schema';
+
+export { CurriculumRule, CurriculumRuleSchema } from './curriculum-rule.schema';
+export type { CurriculumRuleDocument } from './curriculum-rule.schema';

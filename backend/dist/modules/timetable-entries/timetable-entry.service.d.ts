@@ -68,6 +68,17 @@ export declare class TimetableEntryService {
     } & {
         id: string;
     }>;
+    publishClass(classId: string, academicYearId: string): Promise<{
+        message: string;
+        modifiedCount: number;
+    }>;
+    findMyTimetable(teacherId: string | undefined, dayOfWeek?: string): Promise<(import("mongoose").Document<unknown, {}, TimetableEntryDocument, {}, import("mongoose").DefaultSchemaOptions> & TimetableEntry & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
     remove(id: string): Promise<{
         message: string;
     }>;

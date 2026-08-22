@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TimetableEntrySchema = exports.TimetableEntry = exports.TimeSlotSchema = exports.TimeSlot = exports.RoomSchema = exports.Room = exports.TeacherSchema = exports.Teacher = exports.SubjectSchema = exports.Subject = exports.ClassSchema = exports.Class = exports.AcademicYearSchema = exports.AcademicYear = exports.SchoolSchema = exports.School = exports.UserSchema = exports.User = void 0;
+exports.CurriculumRuleSchema = exports.CurriculumRule = exports.TimetableEntrySchema = exports.TimetableEntry = exports.TimeSlotSchema = exports.TimeSlot = exports.RoomSchema = exports.Room = exports.TeacherSchema = exports.Teacher = exports.SubjectSchema = exports.Subject = exports.ClassSchema = exports.Class = exports.AcademicYearSchema = exports.AcademicYear = exports.SchoolSchema = exports.School = exports.UserSchema = exports.User = void 0;
 var user_schema_1 = require("./user.schema");
 Object.defineProperty(exports, "User", { enumerable: true, get: function () { return user_schema_1.User; } });
 Object.defineProperty(exports, "UserSchema", { enumerable: true, get: function () { return user_schema_1.UserSchema; } });
@@ -28,4 +28,7 @@ Object.defineProperty(exports, "TimeSlotSchema", { enumerable: true, get: functi
 var timetable_entry_schema_1 = require("./timetable-entry.schema");
 Object.defineProperty(exports, "TimetableEntry", { enumerable: true, get: function () { return timetable_entry_schema_1.TimetableEntry; } });
 Object.defineProperty(exports, "TimetableEntrySchema", { enumerable: true, get: function () { return timetable_entry_schema_1.TimetableEntrySchema; } });
+var curriculum_rule_schema_1 = require("./curriculum-rule.schema");
+Object.defineProperty(exports, "CurriculumRule", { enumerable: true, get: function () { return curriculum_rule_schema_1.CurriculumRule; } });
+Object.defineProperty(exports, "CurriculumRuleSchema", { enumerable: true, get: function () { return curriculum_rule_schema_1.CurriculumRuleSchema; } });
 //# sourceMappingURL=index.js.map

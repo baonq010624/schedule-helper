@@ -18,8 +18,10 @@ export class TeacherService {
     });
   }
 
-  async findAll() {
-    return this.teacherModel.find({ isActive: true });
+  async findAll(schoolId?: string) {
+    const query: Record<string, unknown> = { isActive: true };
+    if (schoolId) query.schoolId = schoolId;
+    return this.teacherModel.find(query);
   }
 
   async findById(id: string) {

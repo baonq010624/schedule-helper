@@ -17,9 +17,11 @@ const common_1 = require("@nestjs/common");
 const timetable_entry_service_1 = require("./timetable-entry.service");
 const create_timetable_entry_dto_1 = require("./dto/create-timetable-entry.dto");
 const update_timetable_entry_dto_1 = require("./dto/update-timetable-entry.dto");
+const publish_timetable_dto_1 = require("./dto/publish-timetable.dto");
 const jwt_auth_guard_1 = require("../auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../auth/guards/roles.guard");
 const roles_decorator_1 = require("../auth/decorators/roles.decorator");
+const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
 let TimetableEntryController = class TimetableEntryController {
     timetableEntryService;
     constructor(timetableEntryService) {
@@ -39,6 +41,12 @@ let TimetableEntryController = class TimetableEntryController {
     }
     async findByRoom(roomId, dayOfWeek) {
         return this.timetableEntryService.findByRoom(roomId, dayOfWeek);
+    }
+    async findMyTimetable(user, dayOfWeek) {
+        return this.timetableEntryService.findMyTimetable(user.teacherId, dayOfWeek);
+    }
+    async publish(dto) {
+        return this.timetableEntryService.publishClass(dto.classId, dto.academicYearId);
     }
     async findById(id) {
         return this.timetableEntryService.findById(id);
@@ -90,6 +98,22 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], TimetableEntryController.prototype, "findByRoom", null);
+__decorate([
+    (0, common_1.Get)('me'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Query)('dayOfWeek')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", Promise)
+], TimetableEntryController.prototype, "findMyTimetable", null);
+__decorate([
+    (0, common_1.Post)('publish'),
+    (0, roles_decorator_1.Roles)('ADMIN', 'SCHEDULER'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [publish_timetable_dto_1.PublishTimetableDto]),
+    __metadata("design:returntype", Promise)
+], TimetableEntryController.prototype, "publish", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

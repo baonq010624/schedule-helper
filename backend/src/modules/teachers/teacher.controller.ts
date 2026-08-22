@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
@@ -27,8 +28,8 @@ export class TeacherController {
   }
 
   @Get()
-  async findAll() {
-    return this.teacherService.findAll();
+  async findAll(@Query('schoolId') schoolId?: string) {
+    return this.teacherService.findAll(schoolId);
   }
 
   @Get(':id')

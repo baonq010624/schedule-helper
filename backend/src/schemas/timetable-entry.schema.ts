@@ -32,6 +32,9 @@ export class TimetableEntry {
   @Prop()
   note?: string;
 
+  @Prop({ enum: ['DRAFT', 'PUBLISHED'], default: 'DRAFT' })
+  status: string;
+
   @Prop({ default: true })
   isActive: boolean;
 }

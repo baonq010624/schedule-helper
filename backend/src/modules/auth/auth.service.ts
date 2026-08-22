@@ -1,9 +1,10 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { User, UserDocument } from '../../schemas/user.schema';
+import { Teacher, TeacherDocument } from '../../schemas/teacher.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
@@ -11,6 +12,7 @@ import { LoginDto } from './dto/login.dto';
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Teacher.name) private teacherModel: Model<TeacherDocument>,
     private jwtService: JwtService,
   ) {}
 
@@ -40,6 +42,7 @@ export class AuthService {
       sub: newUser._id,
       email: newUser.email,
       role: newUser.role,
+      teacherId: newUser.teacherId,
     });
 
     return {
@@ -74,6 +77,7 @@ export class AuthService {
       sub: user._id,
       email: user.email,
       role: user.role,
+      teacherId: user.teacherId,
     });
 
     return {
@@ -92,6 +96,29 @@ export class AuthService {
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new UnauthorizedException('User not found');
+    }
+    return user;
+  }
+
+  // ADMIN: list all accounts, e.g. to link a TEACHER account to its Teacher record
+  async getAllUsers() {
+    return this.userModel.find().select('-passwordHash');
+  }
+
+  async setUserTeacher(userId: string, teacherId: string | null) {
+    if (teacherId) {
+      const exists = await this.teacherModel.exists({ _id: teacherId });
+      if (!exists) {
+        throw new BadRequestException('Giáo viên không tồn tại');
+      }
+    }
+    const user = await this.userModel.findByIdAndUpdate(
+      userId,
+      teacherId ? { teacherId } : { $unset: { teacherId: '' } },
+      { new: true },
+    );
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
     return user;
   }

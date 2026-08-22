@@ -12,11 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateSubjectDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateSubjectDto {
+    schoolId;
     code;
     name;
     shortName;
 }
 exports.CreateSubjectDto = CreateSubjectDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateSubjectDto.prototype, "schoolId", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),

@@ -35,6 +35,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose = __importStar(require("mongoose"));
 const dotenv = __importStar(require("dotenv"));
+const bcrypt = __importStar(require("bcrypt"));
 const schemas_1 = require("./schemas");
 dotenv.config();
 async function seed() {
@@ -52,6 +53,7 @@ async function seed() {
         await connection.collection('rooms').deleteMany({}).catch(() => null);
         await connection.collection('timeslots').deleteMany({}).catch(() => null);
         await connection.collection('users').deleteMany({}).catch(() => null);
+        await connection.collection('curriculumrules').deleteMany({}).catch(() => null);
         const schoolModel = connection.model('School', schemas_1.SchoolSchema);
         const school = await schoolModel.create({
             name: 'Trường Tiểu học ABC',
@@ -92,20 +94,20 @@ async function seed() {
         console.log(`✅ Created ${classes.length} classes`);
         const subjectModel = connection.model('Subject', schemas_1.SubjectSchema);
         const subjects = await subjectModel.insertMany([
-            { code: 'TOAN', name: 'Toán', shortName: 'T' },
-            { code: 'TV', name: 'Tiếng Việt', shortName: 'TV' },
-            { code: 'TA', name: 'Tiếng Anh', shortName: 'TA' },
-            { code: 'GDTC', name: 'Giáo dục thể chất', shortName: 'GDTC' },
-            { code: 'TNXH', name: 'Tự nhiên - Xã hội', shortName: 'TNXH' },
+            { schoolId: school._id, code: 'TOAN', name: 'Toán', shortName: 'T' },
+            { schoolId: school._id, code: 'TV', name: 'Tiếng Việt', shortName: 'TV' },
+            { schoolId: school._id, code: 'TA', name: 'Tiếng Anh', shortName: 'TA' },
+            { schoolId: school._id, code: 'GDTC', name: 'Giáo dục thể chất', shortName: 'GDTC' },
+            { schoolId: school._id, code: 'TNXH', name: 'Tự nhiên - Xã hội', shortName: 'TNXH' },
         ]);
         console.log(`✅ Created ${subjects.length} subjects`);
         const teacherModel = connection.model('Teacher', schemas_1.TeacherSchema);
         const teachers = await teacherModel.insertMany([
-            { code: 'GV001', name: 'Cô Thúy', email: 'thuy@school.com', department: 'Math' },
-            { code: 'GV002', name: 'Cô Minh', email: 'minh@school.com', department: 'Vietnamese' },
-            { code: 'GV003', name: 'Cô Hòa', email: 'hoa@school.com', department: 'English' },
-            { code: 'GV004', name: 'Thầy Tuấn', email: 'tuan@school.com', department: 'PE' },
-            { code: 'GV005', name: 'Cô Lan', email: 'lan@school.com', department: 'Science' },
+            { schoolId: school._id, code: 'GV001', name: 'Cô Thúy', email: 'thuy@school.com', department: 'Math' },
+            { schoolId: school._id, code: 'GV002', name: 'Cô Minh', email: 'minh@school.com', department: 'Vietnamese' },
+            { schoolId: school._id, code: 'GV003', name: 'Cô Hòa', email: 'hoa@school.com', department: 'English' },
+            { schoolId: school._id, code: 'GV004', name: 'Thầy Tuấn', email: 'tuan@school.com', department: 'PE' },
+            { schoolId: school._id, code: 'GV005', name: 'Cô Lan', email: 'lan@school.com', department: 'Science' },
         ]);
         console.log(`✅ Created ${teachers.length} teachers`);
         const roomModel = connection.model('Room', schemas_1.RoomSchema);
@@ -130,15 +132,25 @@ async function seed() {
             { session: 'AFTERNOON', period: 3, startTime: '14:35', endTime: '15:10', type: 'CLASS', order: 10 },
         ]);
         console.log(`✅ Created ${timeSlots.length} time slots`);
+        const curriculumRuleModel = connection.model('CurriculumRule', schemas_1.CurriculumRuleSchema);
+        const curriculumRules = await curriculumRuleModel.insertMany([
+            { academicYearId: academicYear._id, grade: 1, subjectId: subjects[0]._id, requiredPeriodsPerWeek: 5, isRequired: true, severity: 'ERROR' },
+            { academicYearId: academicYear._id, grade: 1, subjectId: subjects[1]._id, requiredPeriodsPerWeek: 10, isRequired: true, severity: 'ERROR' },
+            { academicYearId: academicYear._id, grade: 1, subjectId: subjects[2]._id, requiredPeriodsPerWeek: 2, isRequired: false, severity: 'WARNING' },
+            { academicYearId: academicYear._id, grade: 1, subjectId: subjects[3]._id, requiredPeriodsPerWeek: 2, isRequired: true, severity: 'WARNING' },
+            { academicYearId: academicYear._id, grade: 1, subjectId: subjects[4]._id, requiredPeriodsPerWeek: 2, isRequired: true, severity: 'INFO' },
+        ]);
+        console.log(`✅ Created ${curriculumRules.length} curriculum rules`);
         const userModel = connection.model('User', schemas_1.UserSchema);
+        const passwordHash = await bcrypt.hash('password123', 10);
         const user = await userModel.create({
             email: 'test@test.com',
-            passwordHash: 'hashed_password_placeholder',
+            passwordHash,
             name: 'Test User',
             role: 'ADMIN',
             isActive: true,
         });
-        console.log('✅ Created test user:', user.email);
+        console.log('✅ Created test user:', user.email, '(password: password123)');
         console.log('✨ Seed completed successfully!');
         await mongoose.disconnect();
         process.exit(0);

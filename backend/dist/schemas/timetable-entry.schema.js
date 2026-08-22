@@ -21,6 +21,7 @@ let TimetableEntry = class TimetableEntry {
     timeSlotId;
     roomId;
     note;
+    status;
     isActive;
 };
 exports.TimetableEntry = TimetableEntry;
@@ -59,6 +60,10 @@ __decorate([
     (0, mongoose_1.Prop)(),
     __metadata("design:type", String)
 ], TimetableEntry.prototype, "note", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ enum: ['DRAFT', 'PUBLISHED'], default: 'DRAFT' }),
+    __metadata("design:type", String)
+], TimetableEntry.prototype, "status", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: true }),
     __metadata("design:type", Boolean)

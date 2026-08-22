@@ -7,6 +7,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { User, UserSchema } from '../../schemas/user.schema';
+import { Teacher, TeacherSchema } from '../../schemas/teacher.schema';
 
 @Module({
   imports: [
@@ -24,7 +25,10 @@ import { User, UserSchema } from '../../schemas/user.schema';
         };
       },
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Teacher.name, schema: TeacherSchema },
+    ]),
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

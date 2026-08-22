@@ -12,12 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateTeacherDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateTeacherDto {
+    schoolId;
     name;
     code;
     email;
     department;
 }
 exports.CreateTeacherDto = CreateTeacherDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateTeacherDto.prototype, "schoolId", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),

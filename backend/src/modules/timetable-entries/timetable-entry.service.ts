@@ -208,13 +208,44 @@ export class TimetableEntryService {
     await this.validateReferences(merged);
     await this.checkConflicts(merged, id);
 
+    // Any edit to a published entry must go through Publish again before it counts as official
     const entry = await this.timetableEntryModel
-      .findByIdAndUpdate(id, updateTimetableEntryDto, { new: true })
+      .findByIdAndUpdate(
+        id,
+        { ...updateTimetableEntryDto, status: 'DRAFT' },
+        { new: true },
+      )
       .populate('academicYearId classId subjectId teacherId timeSlotId roomId');
     if (!entry) {
       throw new NotFoundException('Timetable entry not found');
     }
     return entry;
+  }
+
+  // Publish: đánh dấu toàn bộ TKB hiện tại của một lớp trong năm học là chính thức
+  async publishClass(classId: string, academicYearId: string) {
+    const classExists = await this.classModel.exists({ _id: classId });
+    if (!classExists) {
+      throw new BadRequestException('Lớp học không tồn tại');
+    }
+    const result = await this.timetableEntryModel.updateMany(
+      { classId, academicYearId, isActive: true },
+      { status: 'PUBLISHED' },
+    );
+    return {
+      message: 'Đã publish thời khóa biểu',
+      modifiedCount: result.modifiedCount,
+    };
+  }
+
+  // TKB của giáo viên đang đăng nhập (dựa trên teacherId gắn với tài khoản)
+  async findMyTimetable(teacherId: string | undefined, dayOfWeek?: string) {
+    if (!teacherId) {
+      throw new BadRequestException(
+        'Tài khoản chưa được liên kết với một giáo viên',
+      );
+    }
+    return this.findByTeacher(teacherId, dayOfWeek);
   }
 
   // Remove entry (soft delete, consistent with other modules)

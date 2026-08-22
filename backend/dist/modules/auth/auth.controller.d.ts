@@ -29,6 +29,21 @@ export declare class AuthController {
         email: string;
         name: string;
         role: string;
+        teacherId: import("mongoose").Types.ObjectId | undefined;
         isActive: boolean;
+    }>;
+    getUsers(): Promise<(import("mongoose").Document<unknown, {}, import("../../schemas").UserDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../schemas").User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
+    setUserTeacher(id: string, teacherId: string | null): Promise<import("mongoose").Document<unknown, {}, import("../../schemas").UserDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../schemas").User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
     }>;
 }

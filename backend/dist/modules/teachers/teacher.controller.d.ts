@@ -11,7 +11,7 @@ export declare class TeacherController {
     } & {
         id: string;
     }>;
-    findAll(): Promise<(import("mongoose").Document<unknown, {}, import("../../schemas").TeacherDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../schemas").Teacher & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    findAll(schoolId?: string): Promise<(import("mongoose").Document<unknown, {}, import("../../schemas").TeacherDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../schemas").Teacher & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;

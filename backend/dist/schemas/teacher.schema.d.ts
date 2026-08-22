@@ -1,6 +1,7 @@
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 export type TeacherDocument = Teacher & Document;
 export declare class Teacher {
+    schoolId?: Types.ObjectId;
     name: string;
     code: string;
     email: string;
@@ -10,16 +11,25 @@ export declare class Teacher {
 export declare const TeacherSchema: import("mongoose").Schema<Teacher, import("mongoose").Model<Teacher, any, any, any, any, any, Teacher>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Teacher, Document<unknown, {}, Teacher, {
     id: string;
 }, import("mongoose").DefaultSchemaOptions> & Omit<Teacher & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 } & {
     __v: number;
 }, "id"> & import("mongoose").HydratedDocumentOverrides<{
     id: string;
 }>, {
+    schoolId?: import("mongoose").SchemaDefinitionProperty<Types.ObjectId | undefined, Teacher, Document<unknown, {}, Teacher, {
+        id: string;
+    }, import("mongoose").DefaultSchemaOptions> & Omit<Teacher & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    }, "id"> & import("mongoose").HydratedDocumentOverrides<{
+        id: string;
+    }>> | undefined;
     name?: import("mongoose").SchemaDefinitionProperty<string, Teacher, Document<unknown, {}, Teacher, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Teacher & {
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     } & {
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
@@ -28,7 +38,7 @@ export declare const TeacherSchema: import("mongoose").Schema<Teacher, import("m
     code?: import("mongoose").SchemaDefinitionProperty<string, Teacher, Document<unknown, {}, Teacher, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Teacher & {
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     } & {
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
@@ -37,7 +47,7 @@ export declare const TeacherSchema: import("mongoose").Schema<Teacher, import("m
     email?: import("mongoose").SchemaDefinitionProperty<string, Teacher, Document<unknown, {}, Teacher, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Teacher & {
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     } & {
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
@@ -46,7 +56,7 @@ export declare const TeacherSchema: import("mongoose").Schema<Teacher, import("m
     department?: import("mongoose").SchemaDefinitionProperty<string, Teacher, Document<unknown, {}, Teacher, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Teacher & {
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     } & {
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
@@ -55,7 +65,7 @@ export declare const TeacherSchema: import("mongoose").Schema<Teacher, import("m
     isActive?: import("mongoose").SchemaDefinitionProperty<boolean, Teacher, Document<unknown, {}, Teacher, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Teacher & {
-        _id: import("mongoose").Types.ObjectId;
+        _id: Types.ObjectId;
     } & {
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{

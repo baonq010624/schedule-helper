@@ -28,8 +28,11 @@ let TeacherService = class TeacherService {
             isActive: true,
         });
     }
-    async findAll() {
-        return this.teacherModel.find({ isActive: true });
+    async findAll(schoolId) {
+        const query = { isActive: true };
+        if (schoolId)
+            query.schoolId = schoolId;
+        return this.teacherModel.find(query);
     }
     async findById(id) {
         const teacher = await this.teacherModel.findById(id);

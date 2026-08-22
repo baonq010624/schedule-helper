@@ -1,12 +1,14 @@
 import { JwtService } from '@nestjs/jwt';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../../schemas/user.schema';
+import { TeacherDocument } from '../../schemas/teacher.schema';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 export declare class AuthService {
     private userModel;
+    private teacherModel;
     private jwtService;
-    constructor(userModel: Model<UserDocument>, jwtService: JwtService);
+    constructor(userModel: Model<UserDocument>, teacherModel: Model<TeacherDocument>, jwtService: JwtService);
     register(registerDto: RegisterDto): Promise<{
         message: string;
         user: {
@@ -28,6 +30,20 @@ export declare class AuthService {
         token: string;
     }>;
     validateUser(userId: string): Promise<import("mongoose").Document<unknown, {}, UserDocument, {}, import("mongoose").DefaultSchemaOptions> & User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    }>;
+    getAllUsers(): Promise<(import("mongoose").Document<unknown, {}, UserDocument, {}, import("mongoose").DefaultSchemaOptions> & User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
+    setUserTeacher(userId: string, teacherId: string | null): Promise<import("mongoose").Document<unknown, {}, UserDocument, {}, import("mongoose").DefaultSchemaOptions> & User & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;

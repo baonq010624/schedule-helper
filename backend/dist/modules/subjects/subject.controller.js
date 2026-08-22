@@ -28,8 +28,8 @@ let SubjectController = class SubjectController {
     async create(createSubjectDto) {
         return this.subjectService.create(createSubjectDto);
     }
-    async findAll() {
-        return this.subjectService.findAll();
+    async findAll(schoolId) {
+        return this.subjectService.findAll(schoolId);
     }
     async findById(id) {
         return this.subjectService.findById(id);
@@ -52,8 +52,9 @@ __decorate([
 ], SubjectController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('schoolId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], SubjectController.prototype, "findAll", null);
 __decorate([

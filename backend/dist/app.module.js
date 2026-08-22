@@ -55,6 +55,7 @@ const teacher_module_1 = require("./modules/teachers/teacher.module");
 const room_module_1 = require("./modules/rooms/room.module");
 const time_slot_module_1 = require("./modules/time-slots/time-slot.module");
 const timetable_entry_module_1 = require("./modules/timetable-entries/timetable-entry.module");
+const curriculum_rule_module_1 = require("./modules/curriculum-rules/curriculum-rule.module");
 const schemas_1 = require("./schemas");
 let AppModule = class AppModule {
 };
@@ -88,6 +89,7 @@ exports.AppModule = AppModule = __decorate([
                 { name: 'Room', schema: schemas_1.RoomSchema },
                 { name: 'TimeSlot', schema: schemas_1.TimeSlotSchema },
                 { name: 'TimetableEntry', schema: schemas_1.TimetableEntrySchema },
+                { name: 'CurriculumRule', schema: schemas_1.CurriculumRuleSchema },
             ]),
             auth_module_1.AuthModule,
             school_module_1.SchoolModule,
@@ -98,6 +100,7 @@ exports.AppModule = AppModule = __decorate([
             room_module_1.RoomModule,
             time_slot_module_1.TimeSlotModule,
             timetable_entry_module_1.TimetableEntryModule,
+            curriculum_rule_module_1.CurriculumRuleModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

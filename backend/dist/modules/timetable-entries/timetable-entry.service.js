@@ -161,12 +161,29 @@ let TimetableEntryService = class TimetableEntryService {
         await this.validateReferences(merged);
         await this.checkConflicts(merged, id);
         const entry = await this.timetableEntryModel
-            .findByIdAndUpdate(id, updateTimetableEntryDto, { new: true })
+            .findByIdAndUpdate(id, { ...updateTimetableEntryDto, status: 'DRAFT' }, { new: true })
             .populate('academicYearId classId subjectId teacherId timeSlotId roomId');
         if (!entry) {
             throw new common_1.NotFoundException('Timetable entry not found');
         }
         return entry;
+    }
+    async publishClass(classId, academicYearId) {
+        const classExists = await this.classModel.exists({ _id: classId });
+        if (!classExists) {
+            throw new common_1.BadRequestException('Lớp học không tồn tại');
+        }
+        const result = await this.timetableEntryModel.updateMany({ classId, academicYearId, isActive: true }, { status: 'PUBLISHED' });
+        return {
+            message: 'Đã publish thời khóa biểu',
+            modifiedCount: result.modifiedCount,
+        };
+    }
+    async findMyTimetable(teacherId, dayOfWeek) {
+        if (!teacherId) {
+            throw new common_1.BadRequestException('Tài khoản chưa được liên kết với một giáo viên');
+        }
+        return this.findByTeacher(teacherId, dayOfWeek);
     }
     async remove(id) {
         const entry = await this.timetableEntryModel.findByIdAndUpdate(id, { isActive: false }, { new: true });

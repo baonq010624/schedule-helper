@@ -18,6 +18,8 @@ const auth_service_1 = require("./auth.service");
 const register_dto_1 = require("./dto/register.dto");
 const login_dto_1 = require("./dto/login.dto");
 const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
+const roles_guard_1 = require("./guards/roles.guard");
+const roles_decorator_1 = require("./decorators/roles.decorator");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -36,8 +38,15 @@ let AuthController = class AuthController {
             email: user.email,
             name: user.name,
             role: user.role,
+            teacherId: user.teacherId,
             isActive: user.isActive,
         };
+    }
+    async getUsers() {
+        return this.authService.getAllUsers();
+    }
+    async setUserTeacher(id, teacherId) {
+        return this.authService.setUserTeacher(id, teacherId);
     }
 };
 exports.AuthController = AuthController;
@@ -63,6 +72,24 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Get)('users'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getUsers", null);
+__decorate([
+    (0, common_1.Put)('users/:id/teacher'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('teacherId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "setUserTeacher", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

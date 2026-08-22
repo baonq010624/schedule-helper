@@ -13,6 +13,7 @@ import { TeacherModule } from './modules/teachers/teacher.module';
 import { RoomModule } from './modules/rooms/room.module';
 import { TimeSlotModule } from './modules/time-slots/time-slot.module';
 import { TimetableEntryModule } from './modules/timetable-entries/timetable-entry.module';
+import { CurriculumRuleModule } from './modules/curriculum-rules/curriculum-rule.module';
 import {
   UserSchema,
   SchoolSchema,
@@ -23,6 +24,7 @@ import {
   RoomSchema,
   TimeSlotSchema,
   TimetableEntrySchema,
+  CurriculumRuleSchema,
 } from './schemas';
 
 @Module({
@@ -53,6 +55,7 @@ import {
       { name: 'Room', schema: RoomSchema },
       { name: 'TimeSlot', schema: TimeSlotSchema },
       { name: 'TimetableEntry', schema: TimetableEntrySchema },
+      { name: 'CurriculumRule', schema: CurriculumRuleSchema },
     ]),
     AuthModule,
     SchoolModule,
@@ -63,6 +66,7 @@ import {
     RoomModule,
     TimeSlotModule,
     TimetableEntryModule,
+    CurriculumRuleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

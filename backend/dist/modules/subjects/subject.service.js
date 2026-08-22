@@ -28,8 +28,11 @@ let SubjectService = class SubjectService {
             isActive: true,
         });
     }
-    async findAll() {
-        return this.subjectModel.find({ isActive: true });
+    async findAll(schoolId) {
+        const query = { isActive: true };
+        if (schoolId)
+            query.schoolId = schoolId;
+        return this.subjectModel.find(query);
     }
     async findById(id) {
         const subject = await this.subjectModel.findById(id);

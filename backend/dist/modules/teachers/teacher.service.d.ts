@@ -12,7 +12,7 @@ export declare class TeacherService {
     } & {
         id: string;
     }>;
-    findAll(): Promise<(import("mongoose").Document<unknown, {}, TeacherDocument, {}, import("mongoose").DefaultSchemaOptions> & Teacher & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+    findAll(schoolId?: string): Promise<(import("mongoose").Document<unknown, {}, TeacherDocument, {}, import("mongoose").DefaultSchemaOptions> & Teacher & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {
         __v: number;

@@ -1,6 +1,7 @@
 import { TimetableEntryService } from './timetable-entry.service';
 import { CreateTimetableEntryDto } from './dto/create-timetable-entry.dto';
 import { UpdateTimetableEntryDto } from './dto/update-timetable-entry.dto';
+import { PublishTimetableDto } from './dto/publish-timetable.dto';
 export declare class TimetableEntryController {
     private timetableEntryService;
     constructor(timetableEntryService: TimetableEntryService);
@@ -39,6 +40,17 @@ export declare class TimetableEntryController {
     } & {
         id: string;
     })[]>;
+    findMyTimetable(user: any, dayOfWeek?: string): Promise<(import("mongoose").Document<unknown, {}, import("../../schemas").TimetableEntryDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../schemas").TimetableEntry & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
+        _id: import("mongoose").Types.ObjectId;
+    }> & {
+        __v: number;
+    } & {
+        id: string;
+    })[]>;
+    publish(dto: PublishTimetableDto): Promise<{
+        message: string;
+        modifiedCount: number;
+    }>;
     findById(id: string): Promise<import("mongoose").Document<unknown, {}, import("../../schemas").TimetableEntryDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../schemas").TimetableEntry & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {

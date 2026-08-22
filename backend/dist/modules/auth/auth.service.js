@@ -52,11 +52,14 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const bcrypt = __importStar(require("bcrypt"));
 const user_schema_1 = require("../../schemas/user.schema");
+const teacher_schema_1 = require("../../schemas/teacher.schema");
 let AuthService = class AuthService {
     userModel;
+    teacherModel;
     jwtService;
-    constructor(userModel, jwtService) {
+    constructor(userModel, teacherModel, jwtService) {
         this.userModel = userModel;
+        this.teacherModel = teacherModel;
         this.jwtService = jwtService;
     }
     async register(registerDto) {
@@ -77,6 +80,7 @@ let AuthService = class AuthService {
             sub: newUser._id,
             email: newUser.email,
             role: newUser.role,
+            teacherId: newUser.teacherId,
         });
         return {
             message: 'User registered successfully',
@@ -103,6 +107,7 @@ let AuthService = class AuthService {
             sub: user._id,
             email: user.email,
             role: user.role,
+            teacherId: user.teacherId,
         });
         return {
             message: 'Login successful',
@@ -122,12 +127,30 @@ let AuthService = class AuthService {
         }
         return user;
     }
+    async getAllUsers() {
+        return this.userModel.find().select('-passwordHash');
+    }
+    async setUserTeacher(userId, teacherId) {
+        if (teacherId) {
+            const exists = await this.teacherModel.exists({ _id: teacherId });
+            if (!exists) {
+                throw new common_1.BadRequestException('Giáo viên không tồn tại');
+            }
+        }
+        const user = await this.userModel.findByIdAndUpdate(userId, teacherId ? { teacherId } : { $unset: { teacherId: '' } }, { new: true });
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return user;
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
+    __param(1, (0, mongoose_1.InjectModel)(teacher_schema_1.Teacher.name)),
     __metadata("design:paramtypes", [mongoose_2.Model,
+        mongoose_2.Model,
         jwt_1.JwtService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

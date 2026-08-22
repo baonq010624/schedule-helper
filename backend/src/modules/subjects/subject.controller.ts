@@ -7,6 +7,7 @@ import {
   Put,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
@@ -27,8 +28,8 @@ export class SubjectController {
   }
 
   @Get()
-  async findAll() {
-    return this.subjectService.findAll();
+  async findAll(@Query('schoolId') schoolId?: string) {
+    return this.subjectService.findAll(schoolId);
   }
 
   @Get(':id')
