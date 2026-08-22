@@ -1,0 +1,26 @@
+export { User, UserSchema } from './user.schema';
+export type { UserDocument } from './user.schema';
+
+export { School, SchoolSchema } from './school.schema';
+export type { SchoolDocument } from './school.schema';
+
+export { AcademicYear, AcademicYearSchema } from './academic-year.schema';
+export type { AcademicYearDocument } from './academic-year.schema';
+
+export { Class, ClassSchema } from './class.schema';
+export type { ClassDocument } from './class.schema';
+
+export { Subject, SubjectSchema } from './subject.schema';
+export type { SubjectDocument } from './subject.schema';
+
+export { Teacher, TeacherSchema } from './teacher.schema';
+export type { TeacherDocument } from './teacher.schema';
+
+export { Room, RoomSchema } from './room.schema';
+export type { RoomDocument } from './room.schema';
+
+export { TimeSlot, TimeSlotSchema } from './time-slot.schema';
+export type { TimeSlotDocument } from './time-slot.schema';
+
+export { TimetableEntry, TimetableEntrySchema } from './timetable-entry.schema';
+export type { TimetableEntryDocument } from './timetable-entry.schema';
