@@ -48,6 +48,13 @@ export class CurriculumRuleController {
     return this.curriculumRuleService.getClassReport(classId);
   }
 
+  // Gợi ý tự động điền chỗ trống dựa trên số tiết còn thiếu
+  @Post('auto-fill/:classId')
+  @Roles('ADMIN', 'SCHEDULER')
+  async autoFill(@Param('classId') classId: string) {
+    return this.curriculumRuleService.autoFillClass(classId);
+  }
+
   @Get(':id')
   async findById(@Param('id') id: string) {
     return this.curriculumRuleService.findById(id);

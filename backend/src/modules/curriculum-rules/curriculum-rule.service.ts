@@ -9,6 +9,7 @@ import { AcademicYear, AcademicYearDocument } from '../../schemas/academic-year.
 import { Class, ClassDocument } from '../../schemas/class.schema';
 import { Subject, SubjectDocument } from '../../schemas/subject.schema';
 import { TimetableEntry, TimetableEntryDocument } from '../../schemas/timetable-entry.schema';
+import { TimeSlot, TimeSlotDocument } from '../../schemas/time-slot.schema';
 import { CreateCurriculumRuleDto } from './dto/create-curriculum-rule.dto';
 import { UpdateCurriculumRuleDto } from './dto/update-curriculum-rule.dto';
 
@@ -23,6 +24,7 @@ export class CurriculumRuleService {
     @InjectModel(Subject.name) private subjectModel: Model<SubjectDocument>,
     @InjectModel(TimetableEntry.name)
     private timetableEntryModel: Model<TimetableEntryDocument>,
+    @InjectModel(TimeSlot.name) private timeSlotModel: Model<TimeSlotDocument>,
   ) {}
 
   private async validateReferences(dto: {
@@ -107,33 +109,10 @@ export class CurriculumRuleService {
       throw new NotFoundException('Class not found');
     }
 
-    const [gradeRules, classRules, entries] = await Promise.all([
-      this.curriculumRuleModel
-        .find({
-          academicYearId: classDoc.academicYearId,
-          grade: classDoc.grade,
-          classId: { $exists: false },
-          isActive: true,
-        })
-        .populate('subjectId'),
-      this.curriculumRuleModel
-        .find({
-          academicYearId: classDoc.academicYearId,
-          classId: classDoc._id,
-          isActive: true,
-        })
-        .populate('subjectId'),
+    const [rulesBySubject, entries] = await Promise.all([
+      this.getEffectiveRules(classDoc),
       this.timetableEntryModel.find({ classId, isActive: true }),
     ]);
-
-    // Class-specific rules override grade-level rules for the same subject
-    const rulesBySubject = new Map<string, (typeof gradeRules)[number]>();
-    for (const rule of gradeRules) {
-      rulesBySubject.set(String(rule.subjectId?._id ?? rule.subjectId), rule);
-    }
-    for (const rule of classRules) {
-      rulesBySubject.set(String(rule.subjectId?._id ?? rule.subjectId), rule);
-    }
 
     const actualBySubject = new Map<string, number>();
     for (const entry of entries) {
@@ -180,4 +159,123 @@ export class CurriculumRuleService {
       subjects: report.sort((a, b) => a.subjectName.localeCompare(b.subjectName)),
     };
   }
+
+  // Class-specific rules override grade-level rules for the same subject
+  private async getEffectiveRules(classDoc: ClassDocument) {
+    const [gradeRules, classRules] = await Promise.all([
+      this.curriculumRuleModel.find({
+        academicYearId: classDoc.academicYearId,
+        grade: classDoc.grade,
+        classId: { $exists: false },
+        isActive: true,
+      }),
+      this.curriculumRuleModel.find({
+        academicYearId: classDoc.academicYearId,
+        classId: classDoc._id,
+        isActive: true,
+      }),
+    ]);
+
+    const rulesBySubject = new Map<string, (typeof gradeRules)[number]>();
+    for (const rule of gradeRules) {
+      rulesBySubject.set(String(rule.subjectId), rule);
+    }
+    for (const rule of classRules) {
+      rulesBySubject.set(String(rule.subjectId), rule);
+    }
+    return rulesBySubject;
+  }
+
+  // Gợi ý tự động điền các ô trống của một lớp dựa trên số tiết còn thiếu (CurriculumRule)
+  // Chỉ gán môn học (không gán giáo viên/phòng) và tránh xếp 2 môn vào cùng 1 ô đã có sẵn
+  async autoFillClass(classId: string) {
+    const classDoc = await this.classModel.findById(classId);
+    if (!classDoc) {
+      throw new NotFoundException('Class not found');
+    }
+
+    const [rulesBySubject, entries, timeSlots] = await Promise.all([
+      this.getEffectiveRules(classDoc),
+      this.timetableEntryModel.find({ classId, isActive: true }),
+      this.timeSlotModel.find({ isActive: true, type: 'CLASS' }).sort({ order: 1 }),
+    ]);
+
+    const DAYS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+
+    // Số tiết còn thiếu mỗi môn (chỉ xét môn có quy định)
+    const deficits = new Map<string, number>();
+    const perDayCount = new Map<string, number>(); // key: `${subjectId}|${day}`
+    for (const [subjectId, rule] of rulesBySubject) {
+      const actual = entries.filter((e) => String(e.subjectId) === subjectId).length;
+      const deficit = rule.requiredPeriodsPerWeek - actual;
+      if (deficit > 0) deficits.set(subjectId, deficit);
+    }
+    for (const entry of entries) {
+      const key = `${entry.subjectId}|${entry.dayOfWeek}`;
+      perDayCount.set(key, (perDayCount.get(key) ?? 0) + 1);
+    }
+
+    const occupied = new Set(entries.map((e) => `${e.dayOfWeek}|${e.timeSlotId}`));
+    const created: string[] = [];
+
+    for (const day of DAYS) {
+      for (const slot of timeSlots) {
+        if (deficits.size === 0) break;
+        const slotKey = `${day}|${slot._id}`;
+        if (occupied.has(slotKey)) continue;
+
+        const candidate = [...deficits.entries()].find(([subjectId]) => {
+          const rule = rulesBySubject.get(subjectId);
+          const maxPerDay = rule?.maxPeriodsPerDay;
+          if (!maxPerDay) return true;
+          const dayKey = `${subjectId}|${day}`;
+          return (perDayCount.get(dayKey) ?? 0) < maxPerDay;
+        });
+        if (!candidate) continue;
+
+        const [subjectId] = candidate;
+        // eslint-disable-next-line no-await-in-loop
+        const conflict = await this.timetableEntryModel.exists({
+          classId,
+          dayOfWeek: day,
+          timeSlotId: slot._id,
+          isActive: true,
+        });
+        if (conflict) continue;
+
+        // eslint-disable-next-line no-await-in-loop
+        const newEntry = await this.timetableEntryModel.create({
+          academicYearId: classDoc.academicYearId,
+          classId,
+          subjectId,
+          dayOfWeek: day,
+          timeSlotId: slot._id,
+          status: 'DRAFT',
+          isActive: true,
+        });
+        created.push(String(newEntry._id));
+
+        occupied.add(slotKey);
+        const dayKey = `${subjectId}|${day}`;
+        perDayCount.set(dayKey, (perDayCount.get(dayKey) ?? 0) + 1);
+        const remaining = (deficits.get(subjectId) ?? 0) - 1;
+        if (remaining <= 0) deficits.delete(subjectId);
+        else deficits.set(subjectId, remaining);
+      }
+    }
+
+    const subjects = await this.subjectModel.find({ _id: { $in: [...deficits.keys()] } });
+    const subjectById = new Map(subjects.map((s) => [String(s._id), s]));
+    const remainingDeficits = [...deficits.entries()].map(([subjectId, remaining]) => ({
+      subjectId,
+      subjectName: subjectById.get(subjectId)?.name ?? 'Không xác định',
+      remaining,
+    }));
+
+    return {
+      createdCount: created.length,
+      remainingDeficits,
+    };
+  }
 }
+

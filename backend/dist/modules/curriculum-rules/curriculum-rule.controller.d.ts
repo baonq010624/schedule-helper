@@ -32,6 +32,14 @@ export declare class CurriculumRuleController {
             severity: string;
         }[];
     }>;
+    autoFill(classId: string): Promise<{
+        createdCount: number;
+        remainingDeficits: {
+            subjectId: string;
+            subjectName: string;
+            remaining: number;
+        }[];
+    }>;
     findById(id: string): Promise<import("mongoose").Document<unknown, {}, import("../../schemas").CurriculumRuleDocument, {}, import("mongoose").DefaultSchemaOptions> & import("../../schemas").CurriculumRule & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
     }> & {

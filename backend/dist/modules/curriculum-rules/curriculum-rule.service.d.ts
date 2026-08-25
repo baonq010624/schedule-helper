@@ -4,6 +4,7 @@ import { AcademicYearDocument } from '../../schemas/academic-year.schema';
 import { ClassDocument } from '../../schemas/class.schema';
 import { SubjectDocument } from '../../schemas/subject.schema';
 import { TimetableEntryDocument } from '../../schemas/timetable-entry.schema';
+import { TimeSlotDocument } from '../../schemas/time-slot.schema';
 import { CreateCurriculumRuleDto } from './dto/create-curriculum-rule.dto';
 import { UpdateCurriculumRuleDto } from './dto/update-curriculum-rule.dto';
 export declare class CurriculumRuleService {
@@ -12,7 +13,8 @@ export declare class CurriculumRuleService {
     private classModel;
     private subjectModel;
     private timetableEntryModel;
-    constructor(curriculumRuleModel: Model<CurriculumRuleDocument>, academicYearModel: Model<AcademicYearDocument>, classModel: Model<ClassDocument>, subjectModel: Model<SubjectDocument>, timetableEntryModel: Model<TimetableEntryDocument>);
+    private timeSlotModel;
+    constructor(curriculumRuleModel: Model<CurriculumRuleDocument>, academicYearModel: Model<AcademicYearDocument>, classModel: Model<ClassDocument>, subjectModel: Model<SubjectDocument>, timetableEntryModel: Model<TimetableEntryDocument>, timeSlotModel: Model<TimeSlotDocument>);
     private validateReferences;
     create(dto: CreateCurriculumRuleDto): Promise<import("mongoose").Document<unknown, {}, CurriculumRuleDocument, {}, import("mongoose").DefaultSchemaOptions> & CurriculumRule & import("mongoose").Document<import("mongoose").Types.ObjectId, any, any, Record<string, any>, {}> & Required<{
         _id: import("mongoose").Types.ObjectId;
@@ -62,6 +64,15 @@ export declare class CurriculumRuleService {
             actual: number;
             status: "ĐẠT" | "THIẾU" | "THỪA" | "KHÔNG CÓ QUY ĐỊNH";
             severity: string;
+        }[];
+    }>;
+    private getEffectiveRules;
+    autoFillClass(classId: string): Promise<{
+        createdCount: number;
+        remainingDeficits: {
+            subjectId: string;
+            subjectName: string;
+            remaining: number;
         }[];
     }>;
 }

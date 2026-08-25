@@ -56,6 +56,7 @@ const room_module_1 = require("./modules/rooms/room.module");
 const time_slot_module_1 = require("./modules/time-slots/time-slot.module");
 const timetable_entry_module_1 = require("./modules/timetable-entries/timetable-entry.module");
 const curriculum_rule_module_1 = require("./modules/curriculum-rules/curriculum-rule.module");
+const export_module_1 = require("./modules/exports/export.module");
 const schemas_1 = require("./schemas");
 let AppModule = class AppModule {
 };
@@ -101,6 +102,7 @@ exports.AppModule = AppModule = __decorate([
             time_slot_module_1.TimeSlotModule,
             timetable_entry_module_1.TimetableEntryModule,
             curriculum_rule_module_1.CurriculumRuleModule,
+            export_module_1.ExportModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

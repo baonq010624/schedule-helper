@@ -39,6 +39,9 @@ let CurriculumRuleController = class CurriculumRuleController {
     async getClassReport(classId) {
         return this.curriculumRuleService.getClassReport(classId);
     }
+    async autoFill(classId) {
+        return this.curriculumRuleService.autoFillClass(classId);
+    }
     async findById(id) {
         return this.curriculumRuleService.findById(id);
     }
@@ -75,6 +78,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], CurriculumRuleController.prototype, "getClassReport", null);
+__decorate([
+    (0, common_1.Post)('auto-fill/:classId'),
+    (0, roles_decorator_1.Roles)('ADMIN', 'SCHEDULER'),
+    __param(0, (0, common_1.Param)('classId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CurriculumRuleController.prototype, "autoFill", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

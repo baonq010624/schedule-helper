@@ -16,6 +16,7 @@ const academic_year_schema_1 = require("../../schemas/academic-year.schema");
 const class_schema_1 = require("../../schemas/class.schema");
 const subject_schema_1 = require("../../schemas/subject.schema");
 const timetable_entry_schema_1 = require("../../schemas/timetable-entry.schema");
+const time_slot_schema_1 = require("../../schemas/time-slot.schema");
 let CurriculumRuleModule = class CurriculumRuleModule {
 };
 exports.CurriculumRuleModule = CurriculumRuleModule;
@@ -28,6 +29,7 @@ exports.CurriculumRuleModule = CurriculumRuleModule = __decorate([
                 { name: class_schema_1.Class.name, schema: class_schema_1.ClassSchema },
                 { name: subject_schema_1.Subject.name, schema: subject_schema_1.SubjectSchema },
                 { name: timetable_entry_schema_1.TimetableEntry.name, schema: timetable_entry_schema_1.TimetableEntrySchema },
+                { name: time_slot_schema_1.TimeSlot.name, schema: time_slot_schema_1.TimeSlotSchema },
             ]),
         ],
         providers: [curriculum_rule_service_1.CurriculumRuleService],

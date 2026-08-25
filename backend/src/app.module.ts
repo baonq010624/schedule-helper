@@ -14,6 +14,7 @@ import { RoomModule } from './modules/rooms/room.module';
 import { TimeSlotModule } from './modules/time-slots/time-slot.module';
 import { TimetableEntryModule } from './modules/timetable-entries/timetable-entry.module';
 import { CurriculumRuleModule } from './modules/curriculum-rules/curriculum-rule.module';
+import { ExportModule } from './modules/exports/export.module';
 import {
   UserSchema,
   SchoolSchema,
@@ -67,6 +68,7 @@ import {
     TimeSlotModule,
     TimetableEntryModule,
     CurriculumRuleModule,
+    ExportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
