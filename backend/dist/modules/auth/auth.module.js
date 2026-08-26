@@ -28,7 +28,7 @@ exports.AuthModule = AuthModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: (configService) => {
                     const secret = configService.get('JWT_SECRET');
-                    const expirationString ='7d';
+                    const expirationString = configService.get('JWT_EXPIRATION') || '7d';
                     return {
                         secret: secret || 'fallback-secret',
                         signOptions: {
